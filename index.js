@@ -174,6 +174,10 @@ async function processPrivateMessage(message) {
   const userId = message.from;
   const body = message.body ? message.body.trim() : "";
 
+  // Send typing indicator
+  const chat = await message.getChat();
+  chat.sendStateTyping();
+
   if (body || message.hasMedia) {
     // Extract user prompt
     const userPrompt = body || "Describe this image.";
@@ -213,6 +217,10 @@ async function processGroupMessage(message) {
   const isMentioned = body.includes(userPhone);
 
   if (isMentioned) {
+    // Send typing indicator
+    const chat = await message.getChat();
+    chat.sendStateTyping();
+
     // Extract user prompt
     const userPrompt = body || "Describe this image.";
 
@@ -250,10 +258,6 @@ client.on("message", async (message) => {
   try {
     const userId = message.from;
     const isPrivateMessage = userId.endsWith("@c.us");
-
-    // Send typing indicator
-    const chat = await message.getChat();
-    chat.sendStateTyping();
 
     if (isPrivateMessage) {
       await processPrivateMessage(message);
